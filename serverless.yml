@@ -1,0 +1,16 @@
+service: kindlepics
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.11
+  region: eu-west-1
+
+functions:
+  api:
+    handler: app.handler
+    events:
+      - httpApi: '*'
+
+plugins:
+  - serverless-python-requirements
