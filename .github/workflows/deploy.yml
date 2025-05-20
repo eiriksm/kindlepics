@@ -21,6 +21,7 @@ jobs:
     - run: npm ci
     - run: which python
     - run: python --version
+    - run: ln -s /opt/hostedtoolcache/Python/3.11.12/x64/bin/python /opt/hostedtoolcache/Python/3.11.12/x64/bin/python3.11
     - name: serverless deploy
       uses: serverless/github-action@v3.2
       with:
