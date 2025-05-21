@@ -22,7 +22,7 @@ jobs:
         run: |
           # Create a slug from the branch name
           # Store it for next steps.
-          echo "slug=$(echo "${{ github.event.ref }}" | iconv -t ascii//TRANSLIT | sed -r s/[~\^]+//g | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | tr A-Z a-z)" >> $GITHUB_ENV
+          echo "slug=$(echo "${{ github.event.ref }}" | iconv -t ascii//TRANSLIT | sed -r s/[~\^]+//g | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | tr A-Z a-z)" >> $GITHUB_OUTPUT
       - name: Serverless Remove
         run: npx sls remove --stage $GITHUB_REF_SLUG_URL
         env:
