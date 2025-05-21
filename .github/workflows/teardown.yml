@@ -1,9 +1,6 @@
 name: Teardown
 
-
-on:
-  pull_request:
-    types: [ closed ]
+on: delete
 
 jobs:
   teardown:
