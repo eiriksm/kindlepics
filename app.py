@@ -15,7 +15,7 @@ def hello(name: str):
     return {"message": f'Hello from FastAPI, {name}!'}
 
 @app.get("/battery")
-def battery():
+def battery() -> dict[str, str]:
     db = DropboxDB(settings.dropbox_refresh_token)
     value: str = db.get("battery")
     return {"battery": value + "%"}
