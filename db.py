@@ -36,6 +36,7 @@ class DropboxDB:
                 print(f"Error: {e.user_message_text}")
             else:
                 print(f"Error: {e}")
+            return ""
 
     def set(self, key: str, value: str):
         # Write the file to exactly that value
