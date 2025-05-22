@@ -21,7 +21,7 @@ class DropboxDB:
         self.dbx = dropbox.Dropbox(oauth2_refresh_token = refresh_token, app_key = settings.dropbox_app_key, app_secret = settings.dropbox_app_secret)
         self.path = settings.dropbox_path
 
-    def get_token(self):
+    def get_token(self) -> None:
         self.dbx.check_and_refresh_access_token()
 
     def get(self, key: str) -> str:
@@ -30,7 +30,7 @@ class DropboxDB:
         metadata, res = self.dbx.files_download(path)
         return res.content.decode("utf-8").strip()
 
-    def set(self, key: str, value: str):
+    def set(self, key: str, value: str) -> None:
         # Write the file to exactly that value
         try:
             self.get_token()
