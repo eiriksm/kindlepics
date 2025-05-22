@@ -6,6 +6,15 @@ provider:
   runtime: python3.11
   region: eu-west-1
 
+package:
+  patterns:
+    - '!node_modules/**'
+    - '!__pycache__/**'
+    - '!.env'
+    - '!cli/.env'
+    - '!compose.yaml'
+    - '!.venv'
+
 functions:
   api:
     handler: app.handler
