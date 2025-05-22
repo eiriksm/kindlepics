@@ -11,6 +11,11 @@ functions:
     handler: app.handler
     events:
       - httpApi: '*'
+    environment:
+      DROPBOX_REFRESH_TOKEN: ${env:DROPBOX_REFRESH_TOKEN}
+      DROPBOX_APP_KEY: ${env:DROPBOX_APP_KEY}
+      DROPBOX_APP_SECRET: ${env:DROPBOX_APP_SECRET}
+      DROPBOX_PATH: ${env:DROPBOX_PATH}
 
 plugins:
   - serverless-python-requirements
