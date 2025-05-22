@@ -25,18 +25,10 @@ class DropboxDB:
         self.dbx.check_and_refresh_access_token()
 
     def get(self, key: str) -> str:
-        # Read the file from Dropbox.
-        try:
-            self.get_token()
-            path: str = f"{self.path}/{key}"
-            metadata, res = self.dbx.files_download(path)
-            return res.content.decode("utf-8").strip()
-        except ApiError as e:
-            if e.user_message_text:
-                print(f"Error: {e.user_message_text}")
-            else:
-                print(f"Error: {e}")
-            return ""
+        self.get_token()
+        path = f"{self.path}/{key}"
+        metadata, res = self.dbx.files_download(path)
+        return res.content.decode("utf-8").strip()
 
     def set(self, key: str, value: str):
         # Write the file to exactly that value
