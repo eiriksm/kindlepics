@@ -6,11 +6,25 @@ provider:
   runtime: python3.11
   region: eu-west-1
 
+package:
+  patterns:
+    - '!node_modules/**'
+    - '!__pycache__/**'
+    - '!.env'
+    - '!cli/.env'
+    - '!compose.yaml'
+    - '!.venv'
+
 functions:
   api:
     handler: app.handler
     events:
       - httpApi: '*'
+    environment:
+      DROPBOX_REFRESH_TOKEN: ${env:DROPBOX_REFRESH_TOKEN}
+      DROPBOX_APP_KEY: ${env:DROPBOX_APP_KEY}
+      DROPBOX_APP_SECRET: ${env:DROPBOX_APP_SECRET}
+      DROPBOX_PATH: ${env:DROPBOX_PATH}
 
 plugins:
   - serverless-python-requirements
