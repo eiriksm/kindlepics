@@ -14,7 +14,7 @@ class DropboxSettings(BaseSettings):
     dropbox_app_secret: str
 
 
-settings = DropboxSettings()
+settings = DropboxSettings()  # type: ignore[call-arg]
 
 class DropboxDB:
     def __init__(self, refresh_token: str):
