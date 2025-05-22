@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from mangum import Mangum
 from db import DropboxDB, DropboxSettings
-settings = DropboxSettings()
+settings = DropboxSettings()  # type: ignore[call-arg]
 
 app = FastAPI()
 
