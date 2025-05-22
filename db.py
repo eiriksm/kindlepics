@@ -24,7 +24,7 @@ class DropboxDB:
     def get_token(self):
         self.dbx.check_and_refresh_access_token()
 
-    def get(self, key: str):
+    def get(self, key: str) -> str:
         # Read the file from Dropbox.
         try:
             self.get_token()
