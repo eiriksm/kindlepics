@@ -6,7 +6,7 @@ on:
 jobs:
   deploy:
     name: deploy
-    environment: ${{ github.ref_name == 'main' && 'production' || github.ref_name }}
+    environment: ${{ github.ref_name == 'main' && 'production' || 'preview' }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
