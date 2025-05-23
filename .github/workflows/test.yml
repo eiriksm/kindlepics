@@ -7,6 +7,32 @@ on:
     branches: [ main ]
 
 jobs:
+  pytest:
+    name: Run Pytest
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Pytest
+        run: |
+          pip install pytest
+          pip install -r requirements.txt
+
+      - name: Run pytest
+        run: pytest
+        env:
+          # Todo: remove when converted to dependency injection and so on.
+          DROPBOX_REFRESH_TOKEN: ""
+          DROPBOX_APP_KEY: ""
+          DROPBOX_APP_SECRET: ""
+          DROPBOX_PATH: ""
   lint:
     name: Run Ruff Linter
     runs-on: ubuntu-latest
@@ -25,7 +51,6 @@ jobs:
 
       - name: Run Ruff
         run: ruff check .
-        
   mypy:
     name: Run mypy
     runs-on: ubuntu-latest
