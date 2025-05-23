@@ -1,4 +1,4 @@
-name: Deploy sls
+name: Deploy
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
 jobs:
   deploy:
     name: deploy
+    environment: ${{ github.ref_name == 'main' && 'production' || github.ref_name }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
