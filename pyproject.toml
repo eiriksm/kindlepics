@@ -12,6 +12,7 @@ dependencies = [
 ]
 
 [tool.poetry]
+packages = [{include = "kindlepics", from = "."}]
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.3.5"
