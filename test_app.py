@@ -4,6 +4,6 @@ from app import app
 
 client = TestClient(app)
 
-def test_runs():
+def test_runs() -> None:
     assert str(5) == "5"
 

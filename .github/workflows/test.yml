@@ -21,9 +21,11 @@ jobs:
           python-version: '3.11'
 
       - name: Install Pytest
-        run: pip install pytest
+        run: |
+          pip install pytest
+          pip install -r requirements.txt
 
-      - name: Run Ruff
+      - name: Run pytest
         run: pytest
   lint:
     name: Run Ruff Linter
