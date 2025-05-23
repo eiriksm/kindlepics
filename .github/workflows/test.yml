@@ -19,14 +19,12 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
-      - name: Install Pytest
-        run: |
-          pip install pytest
-          pip install -r requirements.txt
-
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v4
+      - run: poetry install
       - name: Run pytest
-        run: pytest
+        run: |
+          poetry run pytest
         env:
           # Todo: remove when converted to dependency injection and so on.
           DROPBOX_REFRESH_TOKEN: ""
@@ -46,11 +44,12 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install Ruff
-        run: pip install ruff
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v4
+      - run: poetry install
 
       - name: Run Ruff
-        run: ruff check .
+        run: poetry run ruff check .
   mypy:
     name: Run mypy
     runs-on: ubuntu-latest
@@ -62,11 +61,9 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install mypy
-        pip install -r requirements.txt
+    - name: Install poetry
+      uses: abatilo/actions-poetry@v4
+    - run: poetry install
     - name: Run mypy
       run: |
-        mypy .
+        poetry run mypy .
