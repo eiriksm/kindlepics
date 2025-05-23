@@ -26,6 +26,8 @@ jobs:
         # Store it for next steps.
         echo "slug=$(echo "$GITHUB_REF_NAME" | iconv -t ascii//TRANSLIT | sed -r s/[~\^]+//g | sed -r s/[^a-zA-Z0-9]+/-/g | sed -r s/^-+\|-+$//g | tr A-Z a-z)" >> $GITHUB_OUTPUT
     - run: |
+        poetry install
+        eval $(poetry env activate)
         npx sls deploy --stage $GITHUB_REF_SLUG_URL
       env:
         # From the slug step.
