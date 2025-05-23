@@ -7,6 +7,24 @@ on:
     branches: [ main ]
 
 jobs:
+  pytest:
+    name: Run Pytest
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Pytest
+        run: pip install pytest
+
+      - name: Run Ruff
+        run: pytest
   lint:
     name: Run Ruff Linter
     runs-on: ubuntu-latest
@@ -25,7 +43,6 @@ jobs:
 
       - name: Run Ruff
         run: ruff check .
-        
   mypy:
     name: Run mypy
     runs-on: ubuntu-latest
