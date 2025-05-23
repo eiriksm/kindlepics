@@ -27,6 +27,12 @@ jobs:
 
       - name: Run pytest
         run: pytest
+        env:
+          # Todo: remove when converted to dependency injection and so on.
+          DROPBOX_REFRESH_TOKEN: ""
+          DROPBOX_APP_KEY: ""
+          DROPBOX_APP_SECRET: ""
+          DROPBOX_PATH: ""
   lint:
     name: Run Ruff Linter
     runs-on: ubuntu-latest
