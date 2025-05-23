@@ -23,7 +23,9 @@ jobs:
         uses: abatilo/actions-poetry@v4
       - run: poetry install
       - name: Run pytest
-        run: pytest
+        run: |
+          eval $(poetry env activate)
+          pytest
         env:
           # Todo: remove when converted to dependency injection and so on.
           DROPBOX_REFRESH_TOKEN: ""
