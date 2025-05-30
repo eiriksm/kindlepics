@@ -14,7 +14,7 @@ settings = DropboxSettings()  # type: ignore[call-arg]
 
 app = FastAPI()
 
-def convert_to_grayscale(input_path, output_path, target_size=(1072, 1448)):
+def convert_to_grayscale(input_path: str, output_path: str, target_size: tuple[int, int]=(1072, 1448)) -> None:
     with Image.open(input_path) as img:
             # Convert to grayscale (8-bit)
             img = img.convert("L")
@@ -24,7 +24,7 @@ def convert_to_grayscale(input_path, output_path, target_size=(1072, 1448)):
             # Flip 90.
             img = img.rotate(90, expand=True)
             # Resize while preserving aspect ratio and allowing upscale
-            img = ImageOps.fit(img, target_size, method=Image.BICUBIC, centering=(0.5, 0.5))
+            img = ImageOps.fit(img, target_size, method=Image.Resampling.BICUBIC, centering=(0.5, 0.5))
             font = ImageFont.truetype("chb.otf", 30)
             # Write the battery level on the image.
             db = DropboxDB(settings.dropbox_refresh_token)
@@ -53,7 +53,7 @@ def battery_post(level: int) -> dict[str, str]:
     return battery()
 
 @app.get('/current_picture')
-def current_picture():
+def current_picture() -> FileResponse:
     # Get all pictures in the folder.
     db = dropbox.Dropbox(oauth2_refresh_token = settings.dropbox_refresh_token, app_key = settings.dropbox_app_key, app_secret = settings.dropbox_app_secret)
     # List the files in the folder we have in settings plus "pics".
@@ -61,14 +61,14 @@ def current_picture():
     files = db.files_list_folder(path).entries
     # Take a random one.
     if not files:
-        return {"error": "No pictures found"}
+        raise ValueError("No files found in the specified Dropbox folder.")
     # Choose a random file. But the same one every day. So day as random seed.
     today = datetime.date.today().isoformat()
     random.seed(today)
     file = random.choice(files)
     # Check if the file is a picture.
     if not isinstance(file, dropbox.files.FileMetadata):
-        return {"error": "No picture found"}
+        raise ValueError("The selected entry is not a file.")
     # Download the file. Unless its already cached here.
     # Save it to a temporary file.
     temp_file_path = f"/tmp/{file.name}"
