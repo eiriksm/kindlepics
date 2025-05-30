@@ -4,21 +4,34 @@ from mangum import Mangum
 from db import DropboxDB, DropboxSettings
 import dropbox
 import datetime
+import os
+from zoneinfo import ZoneInfo  # Available in Python 3.9+
 import random
 settings = DropboxSettings()  # type: ignore[call-arg]
 
 app = FastAPI()
 
-from PIL import Image, ImageOps
+from PIL import Image, ImageOps, ImageDraw, ImageFont
 
 def convert_to_grayscale(input_path, output_path, target_size=(1072, 1448)):
     with Image.open(input_path) as img:
             # Convert to grayscale (8-bit)
             img = img.convert("L")
+            # Crop bottom part that may or may not contain the stupid timestamp.
+            width, height = img.size
+            img = img.crop((0, 0, width, height - 465))
             # Flip 90.
             img = img.rotate(90, expand=True)
             # Resize while preserving aspect ratio and allowing upscale
             img = ImageOps.fit(img, target_size, method=Image.BICUBIC, centering=(0.5, 0.5))
+            font = ImageFont.truetype("chb.otf", 30)
+            # Write the battery level on the image.
+            db = DropboxDB(settings.dropbox_refresh_token)
+            level = db.get("battery")
+            draw = ImageDraw.Draw(img)
+            date_string = datetime.datetime.now(ZoneInfo("Europe/Paris")).strftime('%d.%m %H:%M:%S')
+            text = f"BT: {level}% {date_string}"
+            draw.text((10, 10), text, fill=(255,), font=font)
             # Save as PNG with 8-bit depth
             img.save(output_path, format="PNG", bits=8)
 
@@ -55,15 +68,16 @@ def current_picture():
     # Check if the file is a picture.
     if not isinstance(file, dropbox.files.FileMetadata):
         return {"error": "No picture found"}
-    # Download the file.
-    metadata, res = db.files_download(file.path_lower)
+    # Download the file. Unless its already cached here.
     # Save it to a temporary file.
     temp_file_path = f"/tmp/{file.name}"
-    with open(temp_file_path, "wb") as f:
-        f.write(res.content)
-    # Return the file as a response.
-    # Now convert it to grayscale.
     gray_temp_file_path = f"/tmp/gray_{file.name}"
+    if not os.path.exists(temp_file_path):
+        # Download the file.
+        res = db.files_download(file.path_lower)
+        with open(temp_file_path, "wb") as f:
+            f.write(res.content)
+    # Now convert it to grayscale.
     convert_to_grayscale(temp_file_path, gray_temp_file_path)
     # Return the grayscale image.
     return FileResponse(gray_temp_file_path, media_type="image/jpeg")
