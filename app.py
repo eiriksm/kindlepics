@@ -7,11 +7,12 @@ import datetime
 import os
 from zoneinfo import ZoneInfo  # Available in Python 3.9+
 import random
+
+from PIL import Image, ImageOps, ImageDraw, ImageFont
+
 settings = DropboxSettings()  # type: ignore[call-arg]
 
 app = FastAPI()
-
-from PIL import Image, ImageOps, ImageDraw, ImageFont
 
 def convert_to_grayscale(input_path, output_path, target_size=(1072, 1448)):
     with Image.open(input_path) as img:
