@@ -74,8 +74,11 @@ def current_picture() -> FileResponse:
     temp_file_path = f"/tmp/{file.name}"
     gray_temp_file_path = f"/tmp/gray_{file.name}"
     if not os.path.exists(temp_file_path):
+        print (f"Downloading {file.name} from Dropbox to {temp_file_path}")
         # Download the file.
-        res = db.files_download(file.path_lower)
+        metadata, res = db.files_download(file.path_lower)
+        if res is None or res.content is None:
+            raise ValueError("Failed to download the file from Dropbox.")
         with open(temp_file_path, "wb") as f:
             f.write(res.content)
     # Now convert it to grayscale.
