@@ -30,15 +30,15 @@ def convert_to_grayscale(input_path: str, output_path: str, target_size: tuple[i
             db = DropboxDB(settings.dropbox_refresh_token)
             level = db.get("battery")
             draw = ImageDraw.Draw(img)
-            date_string = datetime.datetime.now(ZoneInfo("Europe/Paris")).strftime('%d.%m %H:%M:%S')
-            text = f"BT: {level}% {date_string}"
-            draw.text((10, 10), text, fill=(255,), font=font)
+            date_string = datetime.datetime.now(ZoneInfo("Europe/Paris")).strftime('%d.%m / %H:%M')
+            text = f"{level}% / {date_string}"
+            draw.text((20, 20), text, fill=(255,), font=font)
             # Save as PNG with 8-bit depth
             img.save(output_path, format="PNG", bits=8)
 
 @app.get("/")
-def hello_world() -> dict[str, str]:
-    return {'message': 'Hello from FastAPI'}
+def go_away() -> dict[str, str]:
+    return {'message': 'Go away, please.'}
 
 @app.get("/battery")
 def battery() -> dict[str, str]:
