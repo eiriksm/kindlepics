@@ -8,7 +8,7 @@ import os
 from zoneinfo import ZoneInfo  # Available in Python 3.9+
 import random
 
-from PIL import Image, ImageOps, ImageDraw, ImageFont
+from PIL import Image, ImageOps, ImageDraw, ImageFont, ImageFilter, ImageEnhance
 
 settings = DropboxSettings()  # type: ignore[call-arg]
 
@@ -25,6 +25,13 @@ def convert_to_grayscale(input_path: str, output_path: str, target_size: tuple[i
             img = img.rotate(90, expand=True)
             # Resize while preserving aspect ratio and allowing upscale
             img = ImageOps.fit(img, target_size, method=Image.Resampling.BICUBIC, centering=(0.5, 0.5))
+            # Optimize for Kindle B&W without backlight (reflective e-ink).
+            # 1. Stretch histogram to full dynamic range — biggest single improvement.
+            img = ImageOps.autocontrast(img, cutoff=0.5)
+            # 2. Boost contrast so mid-tones separate well on a dim reflective surface.
+            img = ImageEnhance.Contrast(img).enhance(1.4)
+            # 3. Sharpen edges — e-ink diffusion makes things look soft without this.
+            img = img.filter(ImageFilter.UnsharpMask(radius=1.5, percent=120, threshold=3))
             font = ImageFont.truetype("chb.otf", 30)
             # Write the battery level on the image.
             db = DropboxDB(settings.dropbox_refresh_token)
@@ -32,7 +39,7 @@ def convert_to_grayscale(input_path: str, output_path: str, target_size: tuple[i
             draw = ImageDraw.Draw(img)
             date_string = datetime.datetime.now(ZoneInfo("Europe/Paris")).strftime('%d.%m / %H:%M')
             text = f"{level}% / {date_string}"
-            draw.text((20, 20), text, fill=(255,), font=font)
+            draw.text((20, 20), text, fill=(255,), font=font, stroke_width=2, stroke_fill=(0,))
             # Save as PNG with 8-bit depth
             img.save(output_path, format="PNG", bits=8)
 
